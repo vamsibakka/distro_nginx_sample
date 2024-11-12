@@ -3,5 +3,5 @@ opentelemetry-instrumentation
 opentelemetry-exporter-otlp
 opentelemetry-instrumentation-flask
 opentelemetry-instrumentation-requests
-mysql-connector-python  # Only in items service
-opentelemetry-instrumentation-mysql  # Only in items service
+mysql-connector-python  
+opentelemetry-instrumentation-mysql  
