@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - items-service
+      - cart-service
+      - payment-service
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://52.23.211.13:4317
+      - OTEL_SERVICE_NAME=nginx
+
+  items-service:
+    build:
+      context: ./items
+    ports:
+      - "5001:5001"
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://52.23.211.13:4317
+      - OTEL_SERVICE_NAME=items
+
+  cart-service:
+    build:
+      context: ./cart
+    ports:
+      - "5002:5002"
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://52.23.211.13:4317
+      - OTEL_SERVICE_NAME=cart
+
+  payment-service:
+    build:
+      context: ./payment
+    ports:
+      - "5003:5003"
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://52.23.211.13:4317
+      - OTEL_SERVICE_NAME=payment
+
+  mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+
+  # tempo:
+  #   image: grafana/tempo:latest
+  #   ports:
+  #     - "4317:4317"  # OTLP gRPC endpoint for OpenTelemetry
+  #     - "3200:3200"  # Tempo UI
+
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   depends_on:
+  #     - tempo
